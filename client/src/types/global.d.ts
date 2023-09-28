@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-
-
 declare global {
     type ReactNode =
         | React.ReactElement<unknown>
@@ -8,10 +5,9 @@ declare global {
         | React.ComponentClass<unknown>
         | null
 
-	interface IBase extends Record<string, unkonwn> {
-		id: string
-	}
-    
+    interface IBase extends Record<string, unkonwn> {
+        id: string
+    }
 
     interface IUser extends Record<string, unknown> {
         id: string
@@ -20,7 +16,13 @@ declare global {
         role: string
         createdAt: string
     }
-
-    
+    interface IProducts {
+        title: string
+        desc: string
+        imgSrc: string
+        price: string
+        category: string
+    }
 }
 
+export { }
