@@ -1,11 +1,12 @@
 {
-    "name": "create-react-app-with-typescript",
+    "name": "mern-ecommerce-app",
     "version": "5.0.0",
     "private": true,
     "dependencies": {
         "@ant-design/icons": "^5.2.6",
         "@emotion/react": "latest",
         "@emotion/styled": "latest",
+        "@reduxjs/toolkit": "^1.9.6",
         "@types/react": "latest",
         "@types/react-dom": "latest",
         "antd": "^5.9.3",
@@ -13,9 +14,12 @@
         "react": "latest",
         "react-dom": "latest",
         "react-helmet-async": "^1.2.0",
+        "react-icons": "^4.11.0",
         "react-perfect-scrollbar": "^1.5.8",
+        "react-redux": "^8.1.2",
         "react-router-dom": "^6.0.2",
         "react-scripts": "latest",
+        "styled-components": "^6.0.8",
         "typescript": "latest"
     },
     "devDependencies": {
