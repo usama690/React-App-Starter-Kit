@@ -2,37 +2,33 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import Button from '../../../component/button'
 import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { login } from '../../../store/auth/auth.slice'
 import { Form, Input } from 'antd'
+import { useLoginMutation } from '../../../services/api'
+import { showError, showSuccess } from '../../../services/toast'
+import { useForm } from 'antd/es/form/Form'
 
 const LoginForm = (): JSX.Element => {
-  const dispatch = useDispatch()
+  const [form] = useForm()
   const navigate = useNavigate()
+  const [login] = useLoginMutation()
 
-  const onFinish = (): void => {
-    dispatch(
-      login({
-        id: "123",
-        name: "Pristia",
-        email: "pristia@abc.com",
-        role: "vendor",
-        profilePicURL:
-          "https://img.freepik.com/premium-photo/portrait-smiling-woman-front-group-people_53419-3873.jpg",
-        createdAt: "2022-02-26T16:37:48.244Z",
+  const onFinish = (values: IKeyValue): void => {
+    login(values).unwrap()
+      .then((fulfilled): void => {
+        if (fulfilled.user.role === 'ADMIN') navigate('/users')
+        else navigate('/products')
+        localStorage.setItem("token", fulfilled.token),
+          showSuccess(fulfilled.message)
+        form.resetFields()
       })
-    );
-
-    navigate("/products")
-
-
-
-    // localStorage.setItem('username', values.username)
-    // localStorage.setItem('password', values.password)
+      .catch((rejected) => {
+        showError(rejected.data.message)
+      })
   }
   return (
     <Form
       initialValues={{ remember: true }}
+      form={form}
       onFinish={onFinish}
     >
       <Form.Item

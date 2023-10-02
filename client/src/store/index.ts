@@ -1,22 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
 import auth from './auth/auth.slice'
-import products from './products/products.slice'
-import { authApi } from '../services/auth'
+import { appApis } from '../services/api'
 
 export interface RootState {
     auth: ReturnType<typeof auth>
-    products: ReturnType<typeof products>
 }
 
 
 const store = configureStore({
     reducer: {
         auth,
-        products,
-        [authApi.reducerPath]: authApi.reducer,
+        [appApis.reducerPath]: appApis.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware),
+        getDefaultMiddleware().concat(appApis.middleware),
 })
 
 export default store

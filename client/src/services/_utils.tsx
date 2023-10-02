@@ -1,4 +1,4 @@
-export const prepareHeaders = (headers: any, { getState }: any) => {
+export const prepareHeaders = (headers: any, { getState }: any): void => {
   const token = getState().auth.token
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)

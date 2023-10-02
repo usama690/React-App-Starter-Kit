@@ -1,22 +1,51 @@
 
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { validatePassword } from '../../../services/_utils'
 import Button from '../../../component/button'
 import { Form, Input, Select } from 'antd'
+import { useState } from 'react'
+import { useRegisterMutation } from '../../../services/api'
+import { showError, showSuccess } from '../../../services/toast'
+import { useForm } from 'antd/es/form/Form'
 
+const roleDataOptions = [
+    { value: 'VENDOR', label: 'Vendor' },
+    { value: 'CUSTOMER', label: 'Customer' },
+]
 
-const RegisterForm = () => {
-    const onFinish = (values: IUser): void => {
-        console.log('Received values of form: ', values)
+const RegisterForm = (): JSX.Element => {
+    const [register, { isLoading }] = useRegisterMutation()
+    const [form] = useForm()
+    const [file, setFile] = useState<IKeyValue | any>({})
+    const navigate = useNavigate()
+
+    const onFinish = (values: IKeyValue): void => {
+        const formData = new FormData()
+        Object.keys(values).forEach(key => {
+            if (key === 'profile_img') formData.append(key, file)
+            else formData.append(key, values[key])
+        })
+        register(formData).unwrap()
+            .then((fulfilled): void => {
+                showSuccess(fulfilled.message)
+                form.resetFields()
+                navigate('/')
+            })
+            .catch((rejected) => {
+                showError(rejected.data.message)
+            })
+
     }
     return (
         <Form
             initialValues={{ remember: true }}
             onFinish={onFinish}
+            form={form}
+            disabled={isLoading}
         >
             <Form.Item
-                name="first_name"
+                name="firstName"
                 label="First Name"
                 rules={[
                     {
@@ -28,7 +57,7 @@ const RegisterForm = () => {
                 <Input />
             </Form.Item>
             <Form.Item
-                name="last_name"
+                name="lastName"
                 label="Last Name"
                 rules={[
                     {
@@ -80,6 +109,18 @@ const RegisterForm = () => {
                 />
             </Form.Item>
             <Form.Item
+                name="profile_img"
+                label="Image"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please select the Image',
+                    },
+                ]}
+            >
+                <input type="file" disabled={isLoading} onChange={(e: any) => setFile(e.target.files[0])} />
+            </Form.Item>
+            <Form.Item
                 name="role"
                 label="Role"
                 rules={[
@@ -90,16 +131,11 @@ const RegisterForm = () => {
                 ]}
             >
                 <Select
-                    // defaultValue="lucy"
-                    // onChange={handleChange}
-                    options={[
-                        { value: 'vendor', label: 'Vendor' },
-                        { value: 'customer', label: 'Customer' },
-                    ]}
+                    options={roleDataOptions}
                 />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit" block style={{ justifyContent: 'center' }} > Register </Button>
+                <Button loading={isLoading} type="primary" htmlType="submit" block style={{ justifyContent: 'center' }} > Register </Button>
             </Form.Item>
             <span> Already have an account?</span> <Link to="/">Log in</Link>
         </Form>

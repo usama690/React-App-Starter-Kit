@@ -1,5 +1,8 @@
 import { Form, Input, Modal, Select } from "antd"
 import { useForm } from "antd/es/form/Form"
+import { useAddProductMutation, useGetCategoriesQuery } from "../../../services/api"
+import { useState } from "react"
+import { showError, showSuccess } from "../../../services/toast"
 
 interface IAddProductModal {
     open: boolean,
@@ -7,24 +10,43 @@ interface IAddProductModal {
 }
 
 const AddProductModal = ({ open, setOpen }: IAddProductModal): JSX.Element => {
+    const [addProduct, { isLoading }] = useAddProductMutation()
+    const { data: categoryData } = useGetCategoriesQuery()
+    const [file, setFile] = useState<IKeyValue | any>({})
     const [form] = useForm()
 
-    const handleFormSubmit = (values: IProducts) => {
-        console.log(values)
+
+    const handleFormSubmit = (values: IKeyValue) => {
+        const formData = new FormData()
+        Object.keys(values).forEach(key => {
+            if (key === 'product_img') formData.append(key, file)
+            else formData.append(key, values[key])
+        })
+        addProduct(formData).unwrap()
+            .then((fulfilled): void => {
+                showSuccess(fulfilled.message)
+                form.resetFields()
+                setOpen(false)
+            })
+            .catch((rejected) => {
+                showError(rejected.data.message)
+            })
+
     }
 
     const handleModalSubmit: any = (): void => {
         form
             .validateFields()
-            .then(values => handleFormSubmit(values))
+            .then((values: IKeyValue) => handleFormSubmit(values))
             .catch(err => console.log(err))
     }
 
     return (
-        <Modal onOk={handleModalSubmit} okText="Create" open={open} title="Add New Product" onCancel={() => setOpen(false)}>
+        <Modal onOk={handleModalSubmit} confirmLoading={isLoading} okText="Create" open={open} title="Add New Product" onCancel={() => setOpen(false)}>
             <Form
                 form={form}
                 initialValues={{ remember: true }}
+                disabled={isLoading}
             >
                 <Form.Item
                     name="title"
@@ -51,7 +73,7 @@ const AddProductModal = ({ open, setOpen }: IAddProductModal): JSX.Element => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="imgSrc"
+                    name="product_img"
                     label="Image"
                     rules={[
                         {
@@ -60,7 +82,7 @@ const AddProductModal = ({ open, setOpen }: IAddProductModal): JSX.Element => {
                         },
                     ]}
                 >
-                    <input type="file" />
+                    <input type="file" disabled={isLoading} onChange={(e: any) => setFile(e.target.files[0])} />
                 </Form.Item>
                 <Form.Item
                     name="price"
@@ -84,7 +106,7 @@ const AddProductModal = ({ open, setOpen }: IAddProductModal): JSX.Element => {
                         },
                     ]}
                 >
-                    <Select />
+                    <Select options={categoryData?.categories?.map((it: ICategory) => ({ label: it.categoryName, value: it._id }))} />
                 </Form.Item>
             </Form >
         </Modal>

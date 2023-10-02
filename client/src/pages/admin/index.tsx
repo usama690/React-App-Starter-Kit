@@ -1,3 +1,3 @@
-import Users from './users'
+import Users from './categories'
 
 export { Users }

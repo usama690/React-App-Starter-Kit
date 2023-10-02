@@ -1,18 +1,14 @@
 import User from "../models/user.model";
-import config from "./config";
-import { tokenTypes } from "./tokens";
-const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
 const jwtOptions = {
-  secretOrKey: config.jwt.secret,
+  secretOrKey: process.env.JWT_SECRET,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 
 const jwtVerify = async (payload, done) => {
   try {
-    if (payload.type !== tokenTypes.ACCESS) {
-      throw new Error("Invalid token type");
-    }
+
     const user = await User.findById(payload.sub);
     if (!user) {
       return done(null, false);

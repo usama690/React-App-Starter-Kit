@@ -23,6 +23,31 @@ declare global {
         price: string
         category: string
     }
+    interface IProductsByQuery {
+        products: {
+            title: string
+            desc: string
+            imgSrc: string
+            price: string
+            category: string
+        }[]
+    }
+    interface IKeyValue {
+        [key: string]: any
+    }
+    interface IPagination {
+        page: number | undefined
+        pageSize: number | undefined
+        keyword?: string
+    }
+    interface ICategory {
+        _id: string
+        categoryName: string
+    }
+    interface ISearch {
+        handleSearch: (searchData: IProductsByQuery) => void
+        handleReFetchProducts?: () => void
+    }
 }
 
 export { }

@@ -7,4 +7,5 @@ background-color: #232F3E;
 export const LayoutWrapper = styled(Layout)`
 height: 100px;
 padding: 0 1rem;
+background-color: #000;
 `

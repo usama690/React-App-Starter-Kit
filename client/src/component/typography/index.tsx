@@ -5,11 +5,12 @@ const { Title } = Typography
 interface ITypoGraphy {
     value: string;
     level: 5 | 1 | 2 | 3 | 4 | undefined
+    style?: { [key: string]: string | number }
 }
 
-const TypoGraphy = ({ value, level }: ITypoGraphy): ReactNode => {
+const TypoGraphy = ({ value, level, style }: ITypoGraphy): ReactNode => {
     return (
-        <Title level={level}>{value}</Title>
+        <Title level={level} {...style && { style }}>{value}</Title>
     )
 }
 

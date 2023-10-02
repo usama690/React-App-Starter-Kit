@@ -1,1 +1,6 @@
-# Starter Kit for React, @Typescript @MaterialUI
+## Running the app
+
+```bash
+# run in watch mode
+$ npm run start
+```

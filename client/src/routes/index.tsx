@@ -1,4 +1,5 @@
-import { Navigate, useRoutes } from 'react-router-dom'
+/* eslint-disable no-empty-pattern */
+import { Navigate, useNavigate, useRoutes } from 'react-router-dom'
 import PublicRoute from './public-route'
 import { Error404NotFound, Login, Register } from '../pages'
 import { useSelector } from 'react-redux'
@@ -6,9 +7,18 @@ import { RootState } from '../store'
 import { roles } from '../roles'
 import { RolesRoutes } from '../roles/routes'
 import { AuthLayout } from '../layouts'
+import { useGetUserInfoQuery } from '../services/api'
+import { useEffect } from 'react'
 
 export default function Routes(): ReactNode {
   const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate()
+  const {} = useGetUserInfoQuery()
+
+  useEffect(() => {
+    if (user?.role === 'ADMIN') navigate('/users')
+    else navigate('/products')
+  }, [user])
 
   const PublicRoutes = [
     {
@@ -34,9 +44,9 @@ export default function Routes(): ReactNode {
   ];
 
   const getRolesRoutes = () => {
-    if (user?.role === roles.admin) {
+    if (user?.role === roles.admin.toUpperCase()) {
       return RolesRoutes.admin;
-    } else if (user?.role === roles.vendor) {
+    } else if (user?.role === roles.vendor.toUpperCase()) {
       return RolesRoutes.vendor;
     }
     return RolesRoutes.customer;
