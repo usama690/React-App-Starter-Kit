@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/es/upload'
+
 export const prepareHeaders = (headers: any, { getState }: any): void => {
   const token = getState().auth.token
   if (token) {
@@ -6,17 +8,8 @@ export const prepareHeaders = (headers: any, { getState }: any): void => {
   return headers
 }
 
-export const validatePassword = (
-  _: any,
-  value: string,
-  callback: (value?: string) => void
-): void => {
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{10,}$/
-  if (value && !passwordRegex.test(value)) {
-    callback(
-      'Password must have at least one uppercase letter, one lowercase letter, one number, one special character, and be 10 characters long'
-    )
-  } else {
-    callback()
-  }
+export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
+  const reader = new FileReader()
+  reader.addEventListener('load', () => callback(reader.result as string))
+  reader.readAsDataURL(img)
 }
